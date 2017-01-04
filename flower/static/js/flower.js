@@ -329,6 +329,28 @@ var flower = (function () {
         });
     }
 
+    function on_task_semabort(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        var taskid = $('#taskid').text();
+
+        $.ajax({
+            type: 'POST',
+            url: url_prefix() + '/api/task/semabort/' + taskid,
+            dataType: 'json',
+            data: {
+                'terminate': false,
+            },
+            success: function (data) {
+                show_success_alert(data.message);
+            },
+            error: function (data) {
+                show_error_alert(data.responseText);
+            }
+        });
+    }
+
     function on_task_revoke(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -885,6 +907,7 @@ var flower = (function () {
         on_task_rate_limit: on_task_rate_limit,
         on_cancel_task_filter: on_cancel_task_filter,
         on_task_revoke: on_task_revoke,
+        on_task_semabort: on_task_semabort,
         on_task_terminate: on_task_terminate,
     };
 

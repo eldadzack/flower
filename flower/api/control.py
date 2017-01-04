@@ -471,6 +471,42 @@ Revoke a task
         self.write(dict(message="Revoked '%s'" % taskid))
 
 
+class TaskSemabort(ControlHandler):
+    @web.authenticated
+    def post(self, taskid):
+        """
+Revoke a task
+
+**Example request**:
+
+.. sourcecode:: http
+
+  POST /api/task/semabort/1480b55c-b8b2-462c-985e-24af3e9158f9
+  Content-Length: 0
+  Content-Type: application/x-www-form-urlencoded; charset=utf-8
+  Host: localhost:5555
+
+**Example response**:
+
+.. sourcecode:: http
+
+  HTTP/1.1 200 OK
+  Content-Length: 61
+  Content-Type: application/json; charset=UTF-8
+
+  {
+      "message": "Semaborted '1480b55c-b8b2-462c-985e-24af3e9158f9'"
+  }
+
+:reqheader Authorization: optional OAuth token to authenticate
+:statuscode 200: no error
+:statuscode 401: unauthorized request
+        """
+        logger.info("Semaborting task '%s'", taskid)
+        self.capp.control.broadcast('signal_stop_semaphore', uuid=taskid)
+        self.write(dict(message="Semaborted '%s'" % taskid))
+
+
 class TaskTimout(ControlHandler):
     @web.authenticated
     def post(self, taskname):
